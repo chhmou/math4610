@@ -119,6 +119,7 @@
   .lectures .no { font-family: "IBM Plex Mono", monospace; font-size: 0.78rem; color: var(--ink-soft); }
   .lectures .date { font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; }
   .lectures .off { color: var(--ink-soft); font-style: italic; }
+  .lectures .pending { color: var(--ink-soft); font-style: italic; }
   .lectures .month {
     font-family: "IBM Plex Mono", monospace;
     font-size: 0.72rem;
@@ -167,7 +168,7 @@
 
   <header>
     <h1>MATH 4610<br>Fundamentals of Numerical Analysis</h1>
-    <div class="subtitle">Fall 2026 · &nbsp;Changhong&nbsp;Mou</div>
+    <div class="subtitle">Fall 2026 · Dr.&nbsp;Changhong&nbsp;Mou</div>
 
     <dl class="facts">
       <div>
@@ -244,6 +245,20 @@
     // Each lecture links to NOTES_BASE + "lecNN.pdf" (lec01.pdf, lec02.pdf, ...).
     const NOTES_BASE = "";
 
+    // Shows "not yet posted" until the PDF actually exists in the repo.
+    // Works because the page and the PDFs are on the same GitHub Pages site.
+    // When previewing the page locally (file://), links are shown directly.
+    const LOCAL = location.protocol === "file:";
+    function fileLink(url, label) {
+      const span = document.createElement("span");
+      if (LOCAL) { span.innerHTML = `<a href="${url}">${label}</a>`; return span; }
+      span.innerHTML = `<span class="pending">${label} — not yet posted</span>`;
+      fetch(url, { method: "HEAD" })
+        .then(r => { if (r.ok) span.innerHTML = `<a href="${url}">${label}</a>`; })
+        .catch(() => {});
+      return span;
+    }
+
     const LECTURES = [
       ["Aug",""],
       [1,"Mon, Aug 31"],
@@ -284,7 +299,8 @@
         div.innerHTML = `<span class="no">—</span><span class="date off">${row[1]}</span><span class="off">${row[2]}</span>`;
       } else {
         const n = String(row[0]).padStart(2, "0");
-        div.innerHTML = `<span class="no">${n}</span><span class="date">${row[1]}</span><span><a href="${NOTES_BASE}lec${n}.pdf">Lecture ${row[0]} slides (PDF)</a></span>`;
+        div.innerHTML = `<span class="no">${n}</span><span class="date">${row[1]}</span>`;
+        div.appendChild(fileLink(`${NOTES_BASE}lec${n}.pdf`, `Lecture ${row[0]} slides (PDF)`));
       }
       list.appendChild(div);
     }
@@ -305,11 +321,21 @@
       div.className = "lec";
       div.innerHTML =
         `<span class="no">0${n}</span>` +
-        `<span class="due">${due}</span>` +
-        `<span><a href="${HW_BASE}hw${n}.pdf">Homework ${n} (PDF)</a></span>` +
-        `<span><a href="${HW_BASE}hw${n}-soln.pdf">Solutions (PDF)</a></span>`;
+        `<span class="due">${due}</span>`;
+      div.appendChild(fileLink(`${HW_BASE}hw${n}.pdf`, `Homework ${n} (PDF)`));
+      div.appendChild(fileLink(`${HW_BASE}hw${n}-soln.pdf`, `Solutions (PDF)`));
       hwList.appendChild(div);
     }
+
+    // Midterm links: hidden until the Box placeholders are replaced with real links.
+    document.querySelectorAll('#exams a').forEach(a => {
+      if (a.href.includes("REPLACE")) {
+        const span = document.createElement("span");
+        span.className = "pending";
+        span.textContent = a.textContent.replace(/\s*\(.*\)$/, "") + " — posted after the exam";
+        a.replaceWith(span);
+      }
+    });
   </script>
 
   <section id="materials">
@@ -350,7 +376,7 @@
 
   <footer>
     <span>MATH 4610 · Fall 2026 · Utah State University</span>
-    <span>Changhong Mou · Geology 417B</span>
+    <span>Dr. Changhong Mou · Geology 417B</span>
   </footer>
 
 </div>
