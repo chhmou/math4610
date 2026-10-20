@@ -208,6 +208,8 @@
 
   /* final project documents */
   .proj .lec { grid-template-columns: 34px 1fr; }
+  .proj .what { font-weight: 500; color: var(--aggie); }
+  .proj .sub { display: block; font-size: 0.86rem; color: var(--ink-soft); }
   @media (max-width: 480px) {
     .proj .lec { grid-template-columns: 28px 1fr; }
   }
@@ -314,19 +316,19 @@
 
   <section id="project">
     <h2>Final project</h2>
-    <p>Each student chooses one of three project options and studies the implementation and analysis of a numerical method, culminating in a written report and an in-class presentation. Presentations take place during the last three class meetings: <strong>Mon, Dec 7; Wed, Dec 9; and Fri, Dec 11</strong>.</p>
+    <p>Each student chooses one of the three projects below and submits a written report with MATLAB code. Presentations take place in class during the last three class meetings: <strong>Mon, Dec 7; Wed, Dec 9; and Fri, Dec 11</strong>. The report and code are due <strong>Fri, Dec 18, 11:59 p.m., on Canvas</strong>.</p>
     <div class="lectures proj" id="projList" style="margin-top:16px"></div>
 
     <h3>Requirements</h3>
     <ul class="dates">
-      <li>Choose one of the three options above; the project guidelines describe how to confirm your choice.</li>
-      <li><strong>Written report (PDF)</strong> covering the problem, the numerical method, its implementation, numerical results (figures and tables), an error or convergence study, and conclusions, with references.</li>
-      <li><strong>Code</strong> in MATLAB or Python that reproduces every figure and table in the report, submitted together with the report.</li>
-      <li><strong>In-class presentation</strong> on Dec 7, 9, or 11; the presentation schedule and time limit will be announced in class.</li>
-      <li>Report and code due: <em>to be announced</em>.</li>
-      <li>Cite all sources you use, including books, papers, and online code.</li>
+      <li>Choose one of the three projects above.</li>
+      <li><strong>Written report (PDF)</strong>, typeset in LaTeX or Word, with the derivations, tables, figures, and a brief discussion of the results for each problem.</li>
+      <li><strong>Code in MATLAB</strong>, submitted as a zip file: one script for each problem (<code>Q1.m</code>, <code>Q2.m</code>, <code>Q3.m</code>) that produces its figures and tables, and a short README file.</li>
+      <li><strong>In-class presentation</strong> on Dec 7, 9, or 11. Present the problem, your main results, and your conclusions; the work need not be finished. The schedule will be posted on Canvas.</li>
+      <li><strong>Report and code due Fri, Dec 18, 11:59 p.m.</strong>, on Canvas. The report may take into account comments made at the presentation.</li>
+      <li>You may discuss the project with others, but your code and report must be your own. Cite all sources you use.</li>
     </ul>
-    <p class="note">Project documents are posted here as PDFs; each link goes live once the file is uploaded.</p>
+    <p class="note">Each project is graded out of 100 points: three problems (70), code (10), written report (10), and presentation (10), with a 10-point bonus problem. See the project PDFs for details.</p>
   </section>
 
   <script>
@@ -475,18 +477,30 @@
     });
 
     // Final project documents: upload these file names to the repo.
+    //   [label, file, title, problems]
     const PROJECT_DOCS = [
-      ["00", "project-info.pdf",     "Project overview and guidelines (PDF)"],
-      ["01", "project-option1.pdf",  "Option 1 (PDF)"],
-      ["02", "project-option2.pdf",  "Option 2 (PDF)"],
-      ["03", "project-option3.pdf",  "Option 3 (PDF)"]
+      ["A", "final-project-math4610f2026-A.pdf",
+       "Project A: Iterative methods for the Poisson equation",
+       "Discretization and conditioning in 1D; Jacobi, Gauss–Seidel, and conjugate gradient methods; the Poisson equation in 2D"],
+      ["B", "final-project-math4610f2026-B.pdf",
+       "Project B: Nonlinear equations and optimization",
+       "Roots of a scalar equation; a system of nonlinear equations; unconstrained minimization"],
+      ["C", "final-project-math4610f2026-C.pdf",
+       "Project C: Neural networks and numerical analysis",
+       "ReLU networks and piecewise linear functions; computing the gradient; training"]
     ];
     const projList = document.getElementById("projList");
-    for (const [no, file, label] of PROJECT_DOCS) {
+    for (const [no, file, title, sub] of PROJECT_DOCS) {
       const div = document.createElement("div");
       div.className = "lec";
       div.innerHTML = `<span class="no">${no}</span>`;
-      div.appendChild(fileLink(`${NOTES_BASE}${file}`, label));
+      const cell = document.createElement("span");
+      cell.appendChild(fileLink(`${NOTES_BASE}${file}`, `${title} (PDF)`));
+      const s = document.createElement("span");
+      s.className = "sub";
+      s.textContent = sub;
+      cell.appendChild(s);
+      div.appendChild(cell);
       projList.appendChild(div);
     }
   </script>
@@ -494,7 +508,7 @@
   <section id="materials">
     <h2>Textbooks &amp; software</h2>
     <p><strong>Suggested textbooks.</strong> <em>Numerical Analysis</em>, 10th ed., Burden &amp; Faires; and <em>Numerical Methods: Design, Analysis, and Computer Implementation of Algorithms</em>, Greenbaum &amp; Chartier.</p>
-    <p><strong>Software.</strong> MATLAB or Python (NumPy/SciPy/Matplotlib) is recommended for implementing algorithms and completing assignments.</p>
+    <p><strong>Software.</strong> MATLAB or Python (NumPy/SciPy/Matplotlib) is recommended for implementing algorithms and completing assignments. The final project must be done in MATLAB.</p>
   </section>
 
   <section id="grading">
@@ -505,7 +519,7 @@
       <div>Midterm exam (Fri, Oct 30, in class)</div><div class="pct">20%</div>
       <div>Final project</div><div class="pct">30%</div>
     </div>
-    <p style="margin-top:16px">The final project consists of a written report and an in-class presentation on the implementation and analysis of a numerical method; see <a href="#project">Final project</a> for the options and requirements. Presentations take place during the last three class meetings (Dec 7, 9, and 11). No exams or quizzes will be given during No-Test Week (December 7–11).</p>
+    <p style="margin-top:16px">The final project consists of a written report with MATLAB code and an in-class presentation; see <a href="#project">Final project</a> for the three projects and the requirements. Presentations take place during the last three class meetings (Dec 7, 9, and 11), and the report is due Dec 18. No exams or quizzes will be given during No-Test Week (December 7–11).</p>
     <table class="scale">
       <tr><td class="g">A</td><td class="r">93–100</td><td class="g">B–</td><td class="r">80–82</td><td class="g">C–</td><td class="r">70–72</td></tr>
       <tr><td class="g">A–</td><td class="r">90–92</td><td class="g">C+</td><td class="r">77–79</td><td class="g">D</td><td class="r">60–69</td></tr>
@@ -526,6 +540,7 @@
       <li>Dec 7, 9, 11 — Final project presentations (in class)</li>
       <li>Dec 7–11 — No-Test Week; last day of classes Fri, Dec 11</li>
       <li>Dec 14–18 — Final examinations</li>
+      <li>Fri, Dec 18 — Final project report and code due (11:59 p.m., Canvas)</li>
     </ul>
   </section>
 
