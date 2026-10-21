@@ -130,6 +130,8 @@
   .lectures .date { font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; }
   .lectures .off { color: var(--ink-soft); font-style: italic; }
   .lectures .pending { color: var(--ink-soft); font-style: italic; }
+  .lectures .code { display: block; font-size: 0.85rem; }
+  .lectures .code a, .lectures .code .pending { font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; }
   .lectures .month {
     font-family: "IBM Plex Mono", monospace;
     font-size: 0.72rem;
@@ -269,7 +271,7 @@
   <section id="notes">
     <h2>Lecture slides</h2>
     <div class="lectures" id="lectureList"></div>
-    <p class="note">Slides are posted as PDFs after each lecture; a link goes live once the file is uploaded. Orange rows mark homework due dates; blue rows mark the in-class midterm and the final project presentations.</p>
+    <p class="note">Slides are posted as PDFs after each lecture; a link goes live once the file is uploaded. MATLAB codes used in class are linked under the lecture they go with (folder <code>matlab/</code> in the course repository). Orange rows mark homework due dates; blue rows mark the in-class midterm and the final project presentations.</p>
   </section>
 
   <section id="topics">
@@ -351,6 +353,13 @@
       return span;
     }
 
+    // MATLAB codes shown in class, stored in the repo folder matlab/.
+    //   lecture number -> list of file names
+    const CODE_BASE = NOTES_BASE + "matlab/";
+    const CODES = {
+      20: ["int_simpson_test.m"]
+    };
+
     // Special class days (midterm, presentations) — no lecture slides.
     //   kind: "exam" links to #exams, "present" links to #project
     const EV = (kind, date, label) => ({ kind, date, label });
@@ -430,7 +439,15 @@
       } else {
         const n = String(row[0]).padStart(2, "0");
         div.innerHTML = `<span class="no">${n}</span><span class="date">${row[1]}</span>`;
-        div.appendChild(fileLink(`${NOTES_BASE}lec${n}.pdf`, `Lecture ${row[0]} slides (PDF)`));
+        const cell = document.createElement("span");
+        cell.appendChild(fileLink(`${NOTES_BASE}lec${n}.pdf`, `Lecture ${row[0]} slides (PDF)`));
+        for (const f of (CODES[row[0]] || [])) {
+          const c = fileLink(`${CODE_BASE}${f}`, f);
+          c.className = "code";
+          c.prepend("MATLAB: ");
+          cell.appendChild(c);
+        }
+        div.appendChild(cell);
         const hw = HW_BY_DATE[row[1]];
         if (hw) {
           div.classList.add("hwdue");
